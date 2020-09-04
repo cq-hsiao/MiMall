@@ -9,9 +9,12 @@
                     <a href="javascript:;">协议规则</a>
                 </div>
                 <div class="topbar-user">
-                    <a href="javascript:;">登录</a>
-                    <a href="javascript:;">注册</a>
-                    <a href="javascript:;" class="my-cart"><span class="icon-cart"></span>购物车</a>
+                    <a href="javascript:;" v-if="username">{{username}}</a>
+                    <a href="javascript:;" v-if="username">退出</a>
+                    <a href="javascript:;" v-if="!username" @click="login">登录</a>
+                    <a href="javascript:;" v-if="!username">注册</a>
+                    <a href="/#/order/list" v-if="username">我的订单</a>
+                    <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车({{cartCount}})</a>
                 </div>
             </div>
         </div>
@@ -25,49 +28,13 @@
                         <span>小米手机</span>
                         <div class="children">
                             <ul>
-                                <li class="product">
-                                    <a href="javascript:;" target="_blank">
+                                <li class="product" v-for="(item,index) in phoneList" :key="index">
+                                    <a v-bind:href="'/#/product/'+item.id" target="_blank">
                                         <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-1.png" alt="">
+                                            <img :src="item.mainImage" v-bind:alt="item.subtitle">
                                         </div>
-                                        <div class="pro-name">小米cc9</div>
-                                        <div class="pro-price">1799元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="javascript:;" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-1.png" alt="">
-                                        </div>
-                                        <div class="pro-name">小米cc9</div>
-                                        <div class="pro-price">1799元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="javascript:;" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-1.png" alt="">
-                                        </div>
-                                        <div class="pro-name">小米cc9</div>
-                                        <div class="pro-price">1799元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="javascript:;" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-1.png" alt="">
-                                        </div>
-                                        <div class="pro-name">小米cc9</div>
-                                        <div class="pro-price">1799元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="javascript:;" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-1.png" alt="">
-                                        </div>
-                                        <div class="pro-name">小米cc9</div>
-                                        <div class="pro-price">1799元</div>
+                                        <div class="pro-name">{{item.name}}</div>
+                                        <div class="pro-price">{{item.price | currency}}</div>
                                     </a>
                                 </li>
                             </ul>    
@@ -75,6 +42,55 @@
                     </div>
                     <div class="item-menu">
                         <span>RedMi红米</span>
+                        <div class="children">
+                            <ul>
+                                <li class="product">
+                                    <a href="javascript:;" target="_blank">
+                                        <div class="pro-img">
+                                            <img src="/imgs/nav-img/nav-1.png" alt="">
+                                        </div>
+                                        <div class="pro-name">小米1</div>
+                                        <div class="pro-price">1799元</div>
+                                    </a>
+                                </li>
+                                <li class="product">
+                                    <a href="javascript:;" target="_blank">
+                                        <div class="pro-img">
+                                            <img src="/imgs/nav-img/nav-2.png" alt="">
+                                        </div>
+                                        <div class="pro-name">小米2</div>
+                                        <div class="pro-price">1799元</div>
+                                    </a>
+                                </li>
+                                <li class="product">
+                                    <a href="javascript:;" target="_blank">
+                                        <div class="pro-img">
+                                            <img src="/imgs/nav-img/nav-3.png" alt="">
+                                        </div>
+                                        <div class="pro-name">小米3</div>
+                                        <div class="pro-price">1799元</div>
+                                    </a>
+                                </li>
+                                <li class="product">
+                                    <a href="javascript:;" target="_blank">
+                                        <div class="pro-img">
+                                            <img src="/imgs/nav-img/nav-4.png" alt="">
+                                        </div>
+                                        <div class="pro-name">小米4</div>
+                                        <div class="pro-price">1799元</div>
+                                    </a>
+                                </li>
+                                <li class="product">
+                                    <a href="javascript:;" target="_blank">
+                                        <div class="pro-img">
+                                            <img src="/imgs/nav-img/nav-5.png" alt="">
+                                        </div>
+                                        <div class="pro-name">小米5</div>
+                                        <div class="pro-price">1799元</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="item-menu">
                         <span>小米电视</span>
@@ -151,7 +167,40 @@
 
 <script>
     export default {
-        name:'nav-header'
+        name:'nav-header',
+        data(){
+            return {
+                phoneList: [],
+                cartCount: 0
+            }
+        },
+        mounted() {
+            this.getProductList();
+        },
+        filters:{
+            currency(val){
+                if(!val)return '0.00';
+                return '￥' + val.toFixed(2) + '元';
+            }
+        },
+        methods: {
+            getProductList() {
+                this.axios.get('/products',{
+                    params:{
+                        categoryId: '100012',
+                        pageSize:6
+                    }
+                }).then((res)=>{
+                    this.phoneList = res.list;
+                })
+            },
+            login(){
+                this.$router.push('/login');
+            },
+            goToCart() {
+                this.$router.push('/cart')
+            }
+        }
     }
 </script>
 
@@ -240,7 +289,8 @@
                         &:hover{
                             color: $colorA;
                             .children{
-                                height: 220px;
+                                height:220px;
+                                opacity:1;
                             }
                         }
                         .children{
@@ -275,11 +325,11 @@
                                 .pro-img {
                                     height: 137px;
                                 }
-                                .pro-name {
-                                    font-weight: bold;
-                                    margin-top: 18px;
-                                    margin-bottom: 8px;
-                                    color: $colorB;
+                                .pro-name{
+                                    font-weight:bold;
+                                    margin-top:19px;
+                                    margin-bottom:8px;
+                                    color:$colorB;
                                 }
                                 .pro-price {
                                     color: $colorA;
@@ -323,6 +373,5 @@
                 }
             }
         }
-        
     }
 </style>
