@@ -171,7 +171,8 @@
         data(){
             return {
                 phoneList: [],
-                cartCount: 0
+                cartCount: 0,
+                username:'hsiao'
             }
         },
         mounted() {
