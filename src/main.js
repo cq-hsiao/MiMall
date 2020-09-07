@@ -3,6 +3,7 @@ import routers from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 // import env from './env'
+import Vuelazyload from 'vue-lazyload'
 
 import App from './App.vue'
 
@@ -29,7 +30,12 @@ axios.interceptors.response.use(function(response){
   }
 })
 
-Vue.use(VueAxios,axios)
+Vue.use(VueAxios,axios);
+Vue.use(Vuelazyload,{
+  loading:'/imgs/loading-svg/loading-bars.svg',
+  error:'/imgs/icon-no-data.png'
+});
+
 Vue.config.productionTip = false //生存环境提示
 
 new Vue({
