@@ -4,11 +4,11 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 // import env from './env'
 import Vuelazyload from 'vue-lazyload'
-
+import VueCookie from 'vue-cookie'
 import App from './App.vue'
 
 // mock开关
-const mock = true;
+const mock = false;
 if(mock){
   require('./mock/api');
 }
@@ -21,12 +21,16 @@ axios.defaults.timeout = 8000;
 // 接口错误拦截
 axios.interceptors.response.use(function(response){
   let res = response.data;
+  let path = location.hash;
   if(res.status == 0) {
     return res.data ;
   } else if(res.status == 10) {
-    window.location.href = '/#/login/';
+    if (path != '#/index'){
+      window.location.href = '/#/login/';
+    }
   } else {
     alert(res.msg);
+    return Promise.reject(res);
   }
 })
 
@@ -35,10 +39,10 @@ Vue.use(Vuelazyload,{
   loading:'/imgs/loading-svg/loading-bars.svg',
   error:'/imgs/icon-no-data.png'
 });
-
-Vue.config.productionTip = false //生存环境提示
+Vue.use(VueCookie);
+Vue.config.productionTip = false; //生存环境提示
 
 new Vue({
   router:routers,
   render: h => h(App),
-}).$mount('#app')
+}).$mount('#app');
