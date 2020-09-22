@@ -19,7 +19,7 @@
                         <a href="javascript:;" class="btn" v-on:click="login">登录</a>
                     </div>
                     <div class="tips">
-                        <div class="sms">手机短信登录/注册</div>
+                        <div class="sms" @click="register">手机短信登录/注册</div>
                         <div class="reg">立即注册<span>|</span>忘记密码？</div>
                     </div>
                 </div>
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex';  // 第二种方式 - 1
     export default {
         name: 'login',
         data(){
@@ -55,9 +56,12 @@
                     password
                 }).then((res)=>{
                     this.$cookie.set('userId',res.id,{expires:'1M'});
+                    // this.$store.dispatch('saveUserName',res.username); // 第一种方式
+                    this.saveUserName(res.username); // 第二种方式 - 2
                     this.$router.push('/index');
                 })
             },
+            ...mapActions(['saveUserName']), // 第二种方式 - 3
             register(){
                 this.axios.post('/user/register',{
                     username:'hsiao',

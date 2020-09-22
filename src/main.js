@@ -5,6 +5,7 @@ import VueAxios from 'vue-axios'
 // import env from './env'
 import Vuelazyload from 'vue-lazyload'
 import VueCookie from 'vue-cookie'
+import store from './store'
 import App from './App.vue'
 
 // mock开关
@@ -43,6 +44,7 @@ Vue.use(VueCookie);
 Vue.config.productionTip = false; //生存环境提示
 
 new Vue({
+  store,
   router:routers,
   render: h => h(App),
 }).$mount('#app');

@@ -26,12 +26,13 @@ export default {
     getUser(){
       this.axios.get('/user').then((res)=>{
         // 保存数据到vuex
+        this.$store.dispatch('saveUserName',res.username);
         console.log(res);
       })
     },
     getCartCount(){
-      this.axios.get('/carts/products/sum').then((res)=>{
-        console.log(res);
+      this.axios.get('/carts/products/sum').then((res=0)=>{
+        this.$store.dispatch('saveCartCount',res);
       })
     }
   }

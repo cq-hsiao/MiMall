@@ -277,10 +277,12 @@
                         &:hover{
                             background-color:$colorA;
                             .children{
+                                display:block;
                                 opacity:1;
                             }
                         }
                         .children{
+                            display: none;
                             width:962px;
                             height:451px;
                             background-color:$colorG;
