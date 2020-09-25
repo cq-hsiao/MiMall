@@ -1,14 +1,14 @@
 <template>
     <div class="product">
-        <product-param>
+        <product-param v-bind:title="product.name">
             <template v-slot:buy>
-                <button class="btn">立即购买</button>
+                <button class="btn" @click="buy">立即购买</button>
             </template>
         </product-param>
         <div class="content">
             <div class="item-bg">
-                <h2>小米CC9e</h2>
-                <h3>3200万+4800万 前后双旗舰相机</h3>
+                <h2>{{product.name}}</h2>
+                <h3>{{product.subtitle}}</h3>
                 <p>
                     <a href="javascript:;">全球首款双频 GP</a>
                     <span>|</span>
@@ -19,7 +19,7 @@
                     <a href="javascript:;">红外人脸识别</a>
                 </p>
                 <div class="price">
-                    <span>￥<em>1299</em></span>
+                    <span>￥<em>{{product.price}}</em></span>
                 </div>
             </div>
             <div class="item-bg-2"></div>
@@ -40,11 +40,11 @@
                 <h2>60帧超慢动作摄影<br/>慢慢回味每一瞬间的精彩</h2>
                 <p>后置960帧电影般超慢动作视频，将眨眼间的美妙展现得淋漓尽致！<br/>更能AI 精准分析视频内容，15个场景智能匹配背景音效。</p>
                 <div class="video-bg" @click="openVideo"></div>
-                <div class="video-box" v-show="showSlide">
-                    <div class="overlay"></div>
-                    <div class="video" v-bind:class="showSlide">
+                <div class="video-box">
+                    <div class="overlay" v-if="showSlide"></div>
+                    <div class="video" v-bind:class="{'slide':showSlide}">
                         <span class="icon-close" @click="closeVideo"></span>
-                        <video id="video" src="/imgs/product/video.mp4" autoplay controls="controls"></video>
+                        <video id="video" src="/imgs/product/video.mp4" controls="controls"></video>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,8 @@
         },
         data(){
             return {
-                showSlide:'',//控制动画效果
+                showSlide: false,//控制动画效果
+                product:{},//商品信息
                 swiperOptions:{
                     autoplay:true,
                     slidesPerView:3,
@@ -81,18 +82,28 @@
                 }
             }
         },
+        mounted(){
+          this.getProductInfo()
+        },
         methods:{
+            getProductInfo(){
+              let id = this.$route.params.id;
+                this.axios.get(`/products/${id}`).then((res)=>{
+                    this.product = res;
+                })
+            },
             openVideo(){
-                this.showSlide = 'slideDown';
+                this.showSlide = true;
                 document.getElementsByTagName('video')[0].play();
             },
+            buy(){
+                let id = this.$route.params.id;
+                this.$router.push(`/detail/${id}`);
+            },
             closeVideo(){
+                this.showSlide = false;
                 let video = document.getElementById("video");
                 video.pause();
-                this.showSlide = 'slideUp';
-                setTimeout(() =>{
-                    this.showSlide = '';
-                },600)
             }
         }
     }
@@ -185,26 +196,6 @@
                        opacity: .4;
                        z-index: 10;
                    }
-                   @keyframes slideDown {
-                       from{
-                           top: -50%;
-                           opacity: 0;
-                       }
-                       to{
-                           top: 50%;
-                           opacity: 1;
-                       }
-                   }
-                   @keyframes slideUp {
-                       from{
-                           top: 50%;
-                           opacity: 1;
-                       }
-                       to{
-                           top: -50%;
-                           opacity: 0;
-                       }
-                   }
                    .video{
                        position:fixed;
                        top:-50%;
@@ -213,13 +204,11 @@
                        z-index:10;
                        width:1000px;
                        height:536px;
-                       opacity:1;
-                       &.slideDown{
-                           animation:slideDown .6s linear;
+                       opacity:0;
+                       transition: all .6s;
+                       &.slide{
                            top:50%;
-                       }
-                       &.slideUp{
-                           animation:slideUp .6s linear;
+                           opacity: 1;
                        }
                        .icon-close{
                            position:absolute;

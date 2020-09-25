@@ -24,10 +24,9 @@ export default {
   },
   methods:{
     getUser(){
-      this.axios.get('/user').then((res)=>{
-        // 保存数据到vuex
+      this.axios.get('/user').then((res={})=>{
         this.$store.dispatch('saveUserName',res.username);
-        console.log(res);
+        //console.log(res);
       })
     },
     getCartCount(){
