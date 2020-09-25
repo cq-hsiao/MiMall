@@ -223,17 +223,15 @@
                 })
             },
             addCart(id){
-                this.showModal = true;
-                var sid = id;
-                console.log(sid);
-                // this.axios.post('/carts',{
-                //     productId:id,
-                //     selected: true
-                // }).then(()=>{
-                //
-                // }).catch(()=>{
-                //     this.showModal = true;
-                // });
+                this.axios.post('/carts',{
+                    productId:id,
+                    selected: true
+                }).then((res)=>{
+                    this.showModal = true;
+                    this.$store.dispatch('saveCartCount',res.cartTotalQuantity);
+                }).catch(()=>{
+                    this.showModal = true;
+                });
             },
             goToCart(){
                 this.$router.push('/cart');
@@ -245,33 +243,33 @@
 
 <style lang="scss">
     @import './../assets/scss/config.scss';
-    @import "./../assets/scss/mixin.scss";
-    .index {
-        .swiper-box {
-            .nav-menu {
-                position: absolute;
+    @import './../assets/scss/mixin.scss';
+    .index{
+        .swiper-box{
+            .nav-menu{
+                position:absolute;
                 width:264px;
                 height:451px;
                 z-index:9;
                 padding:26px 0;
                 background-color:#55585a7a;
                 box-sizing:border-box;
-                .menu-wrap {
-                    .menu-item {
-                        height: 50px;
-                        line-height: 50px;
-                        a {
-                            position: relative;
-                            display: block;
-                            font-size: 16px;
+                .menu-wrap{
+                    .menu-item{
+                        height:50px;
+                        line-height:50px;
+                        a{
+                            position:relative;
+                            display:block;
+                            font-size:16px;
                             color: $colorG;
-                            padding-left: 30px;
-                            &:after {
-                                position: absolute;
-                                right: 30px;
-                                top: 17.5px;
-                                content: ' ';
-                                @include bgImg(10px, 15px, '/imgs/icon-arrow.png');
+                            padding-left:30px;
+                            &:after{
+                                position:absolute;
+                                right:30px;
+                                top:17.5px;
+                                content:' ';
+                                @include bgImg(10px,15px,'/imgs/icon-arrow.png');
                             }
                         }
                         &:hover{
@@ -282,7 +280,7 @@
                             }
                         }
                         .children{
-                            display: none;
+                            display:none;
                             width:962px;
                             height:451px;
                             background-color:$colorG;
@@ -342,9 +340,9 @@
         .banner{
             margin-bottom:50px;
         }
-        .product-box {
-            background-color: $colorJ;
-            padding: 30px 0 50px;
+        .product-box{
+            background-color:$colorJ;
+            padding:30px 0 50px;
             h2{
                 font-size:$fontF;
                 height:21px;
@@ -352,71 +350,72 @@
                 color:$colorB;
                 margin-bottom:20px;
             }
-            .wrapper {
-                display: flex;
-                .banner-left {
-                    margin-right: 16px;
-                    img {
-                        width: 224px;
-                        height: 619px;
+            .wrapper{
+                display:flex;
+                .banner-left{
+                    margin-right:16px;
+                    img{
+                        width:224px;
+                        height:619px;
                     }
                 }
                 .list-box{
-                    .list {
+                    .list{
                         @include flex();
                         width:986px;
                         margin-bottom:14px;
                         &:last-child{
-                            margin-bottom: 0;
+                            margin-bottom:0;
                         }
-                        .item {
-                            width: 236px;
-                            height: 302px;
+                        .item{
+                            width:236px;
+                            height:302px;
                             background-color:$colorG;
                             text-align:center;
                         }
-                        span{
-                            display:inline-block;
-                            width:67px;
-                            height:24px;
-                            font-size:14px;
-                            line-height:24px;
-                            color:$colorG;
-                            &.new-pro{
-                                background-color:#7ECF68;
+                            span{
+                                display:inline-block;
+                                width:67px;
+                                height:24px;
+                                font-size:14px;
+                                line-height:24px;
+                                color:$colorG;
+                                &.new-pro{
+                                    background-color:#7ECF68;
+                                }
+                                &.kill-pro{
+                                    background-color:#E82626;
+                                }
                             }
-                            &.kill-pro{
-                                background-color:#E82626;
+                            .item-img{
+                                img{
+                                    width:100%;
+                                    height:195px;
+                                }
                             }
-                        }
-                        .item-img{
-                            img{
-                                width:100%;
-                                height:195px;
-                            }
-                        }
-                        .item-info{
-                            h3{
-                                font-size:$fontJ;
-                                color:$colorB;
-                                line-height:$fontJ;
-                                font-weight:bold;
-                            }
-                            p{
-                                color:$colorD;
-                                line-height:13px;
-                                margin:6px auto 13px;
-                            }
-                            .price{
-                                color:#F20A0A;
-                                font-size:$fontJ;
-                                font-weight:bold;
-                                cursor:pointer;
-                                &:after{
-                                    @include bgImg(22px,22px,'/imgs/icon-cart-hover.png');
-                                    content:' ';
-                                    margin-left:5px;
-                                    vertical-align: middle;
+                            .item-info{
+                                h3{
+                                    font-size:$fontJ;
+                                    color:$colorB;
+                                    line-height:$fontJ;
+                                    font-weight:bold;
+                                }
+                                p{
+                                    color:$colorD;
+                                    line-height:13px;
+                                    margin:6px auto 13px;
+                                }
+                                .price{
+                                    color:#F20A0A;
+                                    font-size:$fontJ;
+                                    font-weight:bold;
+                                    cursor:pointer;
+                                    &:after{
+                                        @include bgImg(22px,22px,'/imgs/icon-cart-hover.png');
+                                        content:' ';
+                                        margin-left:5px;
+                                        vertical-align: middle;
+                                    }
                                 }
                             }
                         }
@@ -424,5 +423,4 @@
                 }
             }
         }
-    }
 </style>
