@@ -5,6 +5,8 @@ import VueAxios from 'vue-axios'
 // import env from './env'
 import Vuelazyload from 'vue-lazyload'
 import VueCookie from 'vue-cookie'
+import { Message } from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
 import App from './App.vue'
 
@@ -31,7 +33,7 @@ axios.interceptors.response.use(function(response){
     }
     return Promise.reject(res);
   } else {
-    alert(res.msg);
+    Message.warning(res.msg);
     return Promise.reject(res);
   }
 })
@@ -42,6 +44,8 @@ Vue.use(Vuelazyload,{
   error:'/imgs/icon-no-data.png'
 });
 Vue.use(VueCookie);
+
+Vue.prototype.$message = Message;
 Vue.config.productionTip = false; //生存环境提示
 
 new Vue({

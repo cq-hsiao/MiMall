@@ -55,10 +55,15 @@
                     username,
                     password
                 }).then((res)=>{
-                    this.$cookie.set('userId',res.id,{expires:'1M'});
+                    this.$cookie.set('userId',res.id,{expires:'Session'});
                     // this.$store.dispatch('saveUserName',res.username); // 第一种方式
                     this.saveUserName(res.username); // 第二种方式 - 2
-                    this.$router.push('/index');
+                    this.$router.push({
+                        name:'index',
+                        params:{
+                            from:'login'
+                        }
+                    });
                 })
             },
             ...mapActions(['saveUserName']), // 第二种方式 - 3

@@ -187,6 +187,10 @@
         },
         mounted() {
             this.getProductList();
+            let params = this.$route.params;
+            if(params && params.from == 'login'){
+                this.getCartCount();
+            }
         },
         filters:{
             currency(val){
@@ -207,6 +211,11 @@
             },
             login(){
                 this.$router.push('/login');
+            },
+            getCartCount(){
+                this.axios.get('/carts/products/sum').then((res=0)=>{
+                    this.$store.dispatch('saveCartCount',res);
+                })
             },
             logout(){
                 this.axios.post('/user/logout').then(()=>{
