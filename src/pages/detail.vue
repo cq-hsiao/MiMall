@@ -108,6 +108,7 @@
                     selected: true
                 }).then((res={cartTotalQuantity:0})=>{
                     this.$store.dispatch('saveCartCount',res.cartTotalQuantity);
+                    this.$message.success('成功添加至购物车~');
                     // this.$router.push('/cart');
                 });
             }
