@@ -34,7 +34,7 @@
                                     </div>
                                     <div class="good-name">
                                         <div class="p-name">{{item.productName}}</div>
-                                        <div class="p-money">{{item.totalPrice + ' X ' + item.quantity}}元</div>
+                                        <div class="p-money">{{item.totalPrice + 'X' + item.quantity}}元</div>
                                     </div>
                                 </div>
                             </div>
@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <el-pagination
-                            v-if="false"
+                            v-if="true"
                             class="pagination"
                             background
                             layout="prev, pager, next"
@@ -63,7 +63,7 @@
                          v-infinite-scroll="scrollMore"
                          infinite-scroll-disabled="true"
                          infinite-scroll-distance="410"
-                         v-if="true"
+                         v-if="false"
                     >
                         <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" alt="" v-show="loading">
                     </div>
@@ -96,11 +96,12 @@
             return {
                 loading:false,
                 list: [],
-                pageSize:1,
+                pageSize:10,
                 pageNum:1,
                 total:0,
                 showNextPage:true,//加载更多：是否显示按钮
                 busy:false,//滚动加载，是否触发
+                finish:false //停止滚动加载
             }
         },
         mounted() {
@@ -112,7 +113,7 @@
                 this.busy = true;
                 this.axios.get('/orders',{
                     params:{
-                        pageSize:1,
+                        pageSize:10,
                         pageNum:this.pageNum
                     }
                 }).then((res) => {
@@ -138,22 +139,25 @@
             // 第三种方法：滚动加载，通过npm插件实现
             scrollMore(){
                 this.busy = true;
-                setTimeout(()=>{
-                    this.pageNum++;
-                    this.getList();
-                },500);
+                if(!this.finish) {
+                    setTimeout(()=>{
+                        this.pageNum++;
+                        this.getList();
+                    },500);
+                }
             },
             // 专门给scrollMore使用
             getList(){
                 this.loading = true;
                 this.axios.get('/orders',{
                     params:{
-                        pageSize:1,
+                        pageSize:10,
                         pageNum:this.pageNum
                     }
                 }).then((res)=>{
                     this.list = this.list.concat(res.list);
                     this.loading = false;
+                    this.finish = !res.hasNextPage;
                     if(res.hasNextPage){
                         this.busy=false;
                     }else{
